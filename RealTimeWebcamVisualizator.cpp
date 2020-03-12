@@ -13,6 +13,7 @@
 #include <string.h>
 #include <fstream>
 #include <string>
+#include <chrono>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -131,9 +132,12 @@ IMG_Init(IMG_INIT_JPG);
  * - One which runs for as long as you want to capture frames (shoot the video).
  * - One which iterates over your buffers everytime (in case of multiple buffering). */
  
-int framesCounter = 0;
+int framesCounterTotal = 0;
+int framesCounterPerSecond = 0;
 
-while(framesCounter < 9000){
+std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+
+while(framesCounterTotal < 9000){
 // Put the buffer in the incoming queue.
 if(ioctl(fd, VIDIOC_QBUF, &bufferinfo) < 0){
     perror("Could not queue buffer, VIDIOC_QBUF");
@@ -173,7 +177,20 @@ SDL_FreeSurface(frame);
 SDL_RWclose(buffer_stream);
 
 
-framesCounter++;
+framesCounterTotal++;
+
+framesCounterPerSecond++;
+
+std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+if(chrono::duration_cast<chrono::microseconds>(end - start).count()>1000000){
+	start = std::chrono::steady_clock::now();
+	
+	cout<< "Frames per second: " << framesCounterPerSecond << endl;
+	cout<< "Total frames: " << framesCounterTotal << endl;
+
+	framesCounterPerSecond = 0;
+}	
 
 }
  
