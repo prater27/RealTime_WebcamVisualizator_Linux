@@ -1,6 +1,8 @@
 # RealTime_WebcamVisualizator_Linux
 A simple code for buffering and streaming a webcam using v4l2(Linux). It uses SDL 1.2 for depicting the processed frames. One single buffer.
 
+Based on the code http://jwhsmith.net/2014/12/capturing-a-webcam-stream-using-v4l2/ and https://gist.github.com/mike168m/6dd4eb42b2ec906e064d
+
 Requires sdl 1.2 and sdl 1.2 image. In order to install this library completely  (using apt) run:
 apt-cache search ^libsdl | grep 1.2
 and then sudo apt install with each of the elements listed. So something like:
